@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+	<AddIn Type="Application">
+		<Name>RevitPluginTemplate</Name>
+		<FullClassName>RevitPluginTemplate.App</FullClassName>
+		<Text>Revit Plugin Template</Text>
+		<Description>This is a Pluging Template</Description>
+		<VisibilityMode>AlwaysVisible</VisibilityMode>
+		<Assembly>C:\Users\larias\source\repos\RevitPluginTemplate\RevitPluginTemplate\bin\Debug\RevitPluginTemplate.dll</Assembly>
+		<AddInId>2949DCF2-FCB9-4798-BCE8-D6A3F122A2A8</AddInId>
+		<VendorId>Larias</VendorId>
+		<VendorDescription>Autodesk, Inc, www.autodesk.com</VendorDescription>
+	</AddIn>
+</RevitAddIns>
+
+
