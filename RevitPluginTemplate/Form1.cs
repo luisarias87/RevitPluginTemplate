@@ -23,46 +23,45 @@ namespace RevitPluginTemplate
             Doc = doc;
             duplicateRB.Checked = true;
         }               
-        private void btn_Create_Click(object sender, EventArgs e)
+        public void btn_Create_Click(object sender, EventArgs e)
         {
-            using (Transaction transaction = new Transaction(Doc,"Duplicate Views")) 
+            DuplicateView();
+            CreateSheet();
+            CreateViewPort();
+
+
+
+
+
+
+        }
+        public XYZ xyz = new XYZ(0,0,0);
+        public Autodesk.Revit.DB.View testView = null;
+        public ViewSheet newViewSheet = null;
+        public void CreateViewPort() 
+        {
+            using (Transaction t = new Transaction(Doc, "create Viewport")) 
+            
             {
-                transaction.Start();
-                IList<Element> ViewPlans = new FilteredElementCollector(Doc).OfClass(typeof(ViewPlan)).ToElements();                                
-                string viewsFloorPlans = this.viewsComboBox.SelectedItem.ToString();
 
-                Autodesk.Revit.DB.View viewId = null;
+                IList<Element> viewForViewPort = new FilteredElementCollector(Doc).OfClass(typeof(ViewPlan)).ToElements();
 
-                foreach (Element viewPlan in ViewPlans)
+                foreach (Element viewPlan in viewForViewPort)
                 {
-                    if (viewPlan.Name  == viewsFloorPlans)
+                    if (viewPlan.Name == testView.Name)
                     {
-                        viewId = viewPlan as Autodesk.Revit.DB.View;
+                        Viewport.Create(Doc, newViewSheet.Id, testView.Id, xyz);
                     }
                 }
-                if (viewId.CanViewBeDuplicated(ViewDuplicateOption.Duplicate) == true && duplicateRB.Checked == true) 
-                {
-                    viewId.Duplicate(ViewDuplicateOption.Duplicate);
-                }
-                if (viewId.CanViewBeDuplicated(ViewDuplicateOption.WithDetailing) == true && duplicateWithDetailingRB.Checked == true)
-                {
-                    viewId.Duplicate(ViewDuplicateOption.WithDetailing);
-                }
-                if (viewId.CanViewBeDuplicated(ViewDuplicateOption.AsDependent) == true && duplicateAsDependentRB.Checked == true)
-                {
-                    viewId.Duplicate(ViewDuplicateOption.AsDependent);
-                }
-                else
-                {
-                    MessageBox.Show("View Cannot be duplicated!");
-                }
-                    
-                 transaction.Commit();  
+
 
             }
-               
 
-
+        
+        }
+        
+        public ViewSheet CreateSheet() 
+        {
 
             IList<Element> tBlockTypes = new FilteredElementCollector(Doc).OfCategory(BuiltInCategory.OST_TitleBlocks).WhereElementIsElementType().ToElements();
 
@@ -75,41 +74,67 @@ namespace RevitPluginTemplate
                 if (tBlockType.Name == selectedTBlock)
                 {
                     titleBlock = tBlockType;
-
                 }
-
-
             }
-
-            if (SheetName == "" || SheetNumber == "")
+            using (Transaction sheetTrans = new Transaction(Doc, "Create Sheets"))
             {
-                TaskDialog.Show("Null value", string.Format("One or more fileds are missing"));
+                sheetTrans.Start();
+                ViewSheet newViewSheet = ViewSheet.Create(Doc, titleBlock.Id);
+                
+                sheetTrans.Commit();
             }
-            else
-            {
-                using (Transaction sheetTrans = new Transaction(Doc, "Create Sheets"))
-                {
-                    sheetTrans.Start();
-                    ViewSheet newSheet = ViewSheet.Create(Doc, titleBlock.Id);
-                    newSheet.Name = SheetName;
-                    newSheet.SheetNumber = SheetNumber;
-                    sheetTrans.Commit();
-                }
-                DialogResult = DialogResult.OK;
-                Close();
-            }
+            DialogResult = DialogResult.OK;
+            Close();
+            return newViewSheet;
         }
-        public string SheetName 
-        {
-            get { return this.sheetName.Text; }
         
-        }
-        public string SheetNumber
+        
+        public Autodesk.Revit.DB.View DuplicateView() 
         {
-            get { return this.sheetNumber.Text; }
 
-        }
+            using (Transaction transaction = new Transaction(Doc, "Duplicate View"))
+            {
+                transaction.Start();
 
+                IList<Element> ViewPlans = new FilteredElementCollector(Doc).OfClass(typeof(ViewPlan)).ToElements();
+                string viewInComboBox = this.viewsComboBox.SelectedItem.ToString();
+
+                Autodesk.Revit.DB.View duplicatedView = null;
+
+                
+
+                foreach (Element viewPlan in ViewPlans)
+                {
+                    if (viewPlan.Name == viewInComboBox)
+                    {
+                        duplicatedView = viewPlan as Autodesk.Revit.DB.View;
+                    }
+                }
+                
+                if (duplicatedView.CanViewBeDuplicated(ViewDuplicateOption.Duplicate) == true && duplicateRB.Checked == true)
+                {
+                    duplicatedView.Duplicate(ViewDuplicateOption.Duplicate); duplicatedView.Name = duplicatedView.Name+"Test" ;
+                }
+
+                else if (duplicatedView.CanViewBeDuplicated(ViewDuplicateOption.WithDetailing) == true && duplicateWithDetailingRB.Checked == true)
+                {
+                    duplicatedView.Duplicate(ViewDuplicateOption.WithDetailing); duplicatedView.Name = duplicatedView.Name + "Test";
+                }
+                else if (duplicatedView.CanViewBeDuplicated(ViewDuplicateOption.AsDependent) == true && duplicateAsDependentRB.Checked == true)
+                {
+                    duplicatedView.Duplicate(ViewDuplicateOption.AsDependent);
+                    duplicatedView.Name = duplicatedView.Name + "Test";
+                }
+                else
+                {
+                    MessageBox.Show("View Cannot be duplicated!");
+                }
+                transaction.Commit();
+                return testView =  duplicatedView;
+
+                
+            }            
+        }                
         private void btn_Cancel_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;    
@@ -146,7 +171,8 @@ namespace RevitPluginTemplate
                     floorplanViews.Add(floorPlan.Name);
                 }
             }
-            viewsComboBox.DataSource = floorplanViews;            
+            viewsComboBox.DataSource = floorplanViews;                      
         }
+   
     }
 }

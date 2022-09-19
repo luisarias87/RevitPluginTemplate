@@ -28,10 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.sheet = new System.Windows.Forms.Label();
-            this.sheetName = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.sheetNumber = new System.Windows.Forms.TextBox();
             this.btn_Cancel = new System.Windows.Forms.Button();
             this.btn_Create = new System.Windows.Forms.Button();
             this.sheet_titleBlock = new System.Windows.Forms.ComboBox();
@@ -42,43 +38,13 @@
             this.duplicateWithDetailingRB = new System.Windows.Forms.RadioButton();
             this.label4 = new System.Windows.Forms.Label();
             this.duplicateRB = new System.Windows.Forms.RadioButton();
+            this.label1 = new System.Windows.Forms.Label();
+            this.sheetNumber = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
-            // 
-            // sheet
-            // 
-            this.sheet.AutoSize = true;
-            this.sheet.Location = new System.Drawing.Point(25, 209);
-            this.sheet.Name = "sheet";
-            this.sheet.Size = new System.Drawing.Size(66, 13);
-            this.sheet.TabIndex = 0;
-            this.sheet.Text = "Sheet Name";
-            // 
-            // sheetName
-            // 
-            this.sheetName.Location = new System.Drawing.Point(24, 235);
-            this.sheetName.Name = "sheetName";
-            this.sheetName.Size = new System.Drawing.Size(277, 20);
-            this.sheetName.TabIndex = 1;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(25, 286);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(75, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Sheet Number";
-            // 
-            // sheetNumber
-            // 
-            this.sheetNumber.Location = new System.Drawing.Point(24, 312);
-            this.sheetNumber.Name = "sheetNumber";
-            this.sheetNumber.Size = new System.Drawing.Size(277, 20);
-            this.sheetNumber.TabIndex = 1;
             // 
             // btn_Cancel
             // 
-            this.btn_Cancel.Location = new System.Drawing.Point(179, 348);
+            this.btn_Cancel.Location = new System.Drawing.Point(359, 348);
             this.btn_Cancel.Name = "btn_Cancel";
             this.btn_Cancel.Size = new System.Drawing.Size(75, 23);
             this.btn_Cancel.TabIndex = 2;
@@ -88,7 +54,7 @@
             // 
             // btn_Create
             // 
-            this.btn_Create.Location = new System.Drawing.Point(260, 348);
+            this.btn_Create.Location = new System.Drawing.Point(441, 348);
             this.btn_Create.Name = "btn_Create";
             this.btn_Create.Size = new System.Drawing.Size(75, 23);
             this.btn_Create.TabIndex = 2;
@@ -172,6 +138,22 @@
             this.duplicateRB.Text = "Duplicate View";
             this.duplicateRB.UseVisualStyleBackColor = true;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(25, 286);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(75, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Sheet Number";
+            // 
+            // sheetNumber
+            // 
+            this.sheetNumber.Location = new System.Drawing.Point(24, 312);
+            this.sheetNumber.Name = "sheetNumber";
+            this.sheetNumber.Size = new System.Drawing.Size(277, 20);
+            this.sheetNumber.TabIndex = 1;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -188,9 +170,7 @@
             this.Controls.Add(this.sheetNumber);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.sheetName);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.sheet);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -200,11 +180,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Label sheet;
-        private System.Windows.Forms.TextBox sheetName;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox sheetNumber;
         private System.Windows.Forms.Button btn_Cancel;
         private System.Windows.Forms.Button btn_Create;
         private System.Windows.Forms.ComboBox sheet_titleBlock;
@@ -215,5 +190,7 @@
         private System.Windows.Forms.RadioButton duplicateWithDetailingRB;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.RadioButton duplicateRB;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox sheetNumber;
     }
 }
