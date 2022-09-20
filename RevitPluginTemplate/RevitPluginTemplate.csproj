@@ -91,6 +91,9 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="LoadTitleBlock.cs" />
+    <Compile Include="LoadViewTitle.cs" />
+    <Compile Include="NewSheetAndView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleCreateSharedParameter.cs" />
   </ItemGroup>
