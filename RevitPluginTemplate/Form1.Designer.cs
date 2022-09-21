@@ -39,7 +39,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.duplicateRB = new System.Windows.Forms.RadioButton();
             this.label1 = new System.Windows.Forms.Label();
-            this.sheetNumber = new System.Windows.Forms.TextBox();
+            this.disciplineListBox = new System.Windows.Forms.CheckedListBox();
+            this.areaName = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btn_Cancel
@@ -141,24 +142,33 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(25, 286);
+            this.label1.Location = new System.Drawing.Point(25, 222);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(75, 13);
+            this.label1.Size = new System.Drawing.Size(60, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Sheet Number";
+            this.label1.Text = "Area Name";
             // 
-            // sheetNumber
+            // disciplineListBox
             // 
-            this.sheetNumber.Location = new System.Drawing.Point(24, 312);
-            this.sheetNumber.Name = "sheetNumber";
-            this.sheetNumber.Size = new System.Drawing.Size(277, 20);
-            this.sheetNumber.TabIndex = 1;
+            this.disciplineListBox.FormattingEnabled = true;
+            this.disciplineListBox.Location = new System.Drawing.Point(340, 178);
+            this.disciplineListBox.Name = "disciplineListBox";
+            this.disciplineListBox.Size = new System.Drawing.Size(154, 139);
+            this.disciplineListBox.TabIndex = 6;
+            // 
+            // areaName
+            // 
+            this.areaName.Location = new System.Drawing.Point(28, 247);
+            this.areaName.Name = "areaName";
+            this.areaName.Size = new System.Drawing.Size(277, 20);
+            this.areaName.TabIndex = 1;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(541, 382);
+            this.Controls.Add(this.disciplineListBox);
             this.Controls.Add(this.duplicateRB);
             this.Controls.Add(this.duplicateAsDependentRB);
             this.Controls.Add(this.duplicateWithDetailingRB);
@@ -167,7 +177,7 @@
             this.Controls.Add(this.sheet_titleBlock);
             this.Controls.Add(this.btn_Create);
             this.Controls.Add(this.btn_Cancel);
-            this.Controls.Add(this.sheetNumber);
+            this.Controls.Add(this.areaName);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -191,6 +201,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.RadioButton duplicateRB;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox sheetNumber;
+        private System.Windows.Forms.CheckedListBox disciplineListBox;
+        private System.Windows.Forms.TextBox areaName;
     }
 }
