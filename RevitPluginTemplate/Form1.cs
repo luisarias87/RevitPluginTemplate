@@ -25,8 +25,9 @@ namespace RevitPluginTemplate
         }               
         public void btn_Create_Click(object sender, EventArgs e)
         {
-            CreateView();
-            CreateSheet();
+            
+            //CreateView();
+            //CreateSheet();
 
             if (disciplineListBox.SelectedItem == null)
             {
@@ -41,6 +42,7 @@ namespace RevitPluginTemplate
 
         public void CreateView()
         {
+           
             
 
                 using (Transaction viewTrans = new Transaction(Doc, "Duplicate View"))
@@ -162,11 +164,15 @@ namespace RevitPluginTemplate
                     // add passed in view onto center of sheet 
                     UV location = new UV((newViewSheet.Outline.Max.U - newViewSheet.Outline.Min.U) / 2, (newViewSheet.Outline.Max.V - (newViewSheet.Outline.Min.V) / 2));
 
-                    // create viewport
+                // create viewport
+                try
+                {
                     Viewport newViewPort = Viewport.Create(Doc, newViewSheet.Id, newView, new XYZ(location.U, location.V, 0));
 
+               
+
                     // set viewport settings
-                    newViewPort.LookupParameter("View Scale").Set(1);
+                    newViewPort.LookupParameter("View Scale").Set(64);
                     newViewPort.SetBoxCenter(new XYZ(location.U, location.V, 0));
                     bool newViewportTypeParameterShowLabel = Doc.GetElement(newViewPort.GetTypeId()).get_Parameter(BuiltInParameter.VIEWPORT_ATTR_SHOW_LABEL).Set(1);
 
@@ -174,9 +180,12 @@ namespace RevitPluginTemplate
                     FilteredElementCollector colViewTitles = new FilteredElementCollector(Doc);
                     colViewTitles.OfClass(typeof(FamilySymbol));
                     colViewTitles.OfCategory(BuiltInCategory.OST_ViewportLabel);
+                
+                    //set view title parameter
+                    //bool newViewportTypeParameterChangeLabel = Doc.GetElement(newViewPort.GetTypeId()).get_Parameter(BuiltInParameter.VIEWPORT_ATTR_LABEL_TAG).Set(newViewSheet.Id);
 
-                    // set view title parameter
-                    bool newViewportTypeParameterChangeLabel = Doc.GetElement(newViewPort.GetTypeId()).get_Parameter(BuiltInParameter.VIEWPORT_ATTR_LABEL_TAG).Set(newView);
+                
+                    
 
                     FilteredElementCollector viewsCol = new FilteredElementCollector(Doc).OfClass(typeof(ViewPlan));
                     viewsCol.ToElementIds();
@@ -194,8 +203,14 @@ namespace RevitPluginTemplate
                         }
 
                     }
+                }
+                catch (Exception ex)
+                {
+                    TaskDialog.Show("Crash", ex.Message);
+                    throw;
+                }
 
-                    sheetTrans.Commit();
+                sheetTrans.Commit();
             }
                       
         }
