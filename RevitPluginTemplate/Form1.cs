@@ -25,9 +25,9 @@ namespace RevitPluginTemplate
         }               
         public void btn_Create_Click(object sender, EventArgs e)
         {
-            
-            //CreateView();
-            //CreateSheet();
+
+            CreateView();
+            CreateSheet();
 
             if (disciplineListBox.SelectedItem == null)
             {
@@ -165,8 +165,8 @@ namespace RevitPluginTemplate
                     UV location = new UV((newViewSheet.Outline.Max.U - newViewSheet.Outline.Min.U) / 2, (newViewSheet.Outline.Max.V - (newViewSheet.Outline.Min.V) / 2));
 
                 // create viewport
-                try
-                {
+                //try
+                //{
                     Viewport newViewPort = Viewport.Create(Doc, newViewSheet.Id, newView, new XYZ(location.U, location.V, 0));
 
                
@@ -177,16 +177,18 @@ namespace RevitPluginTemplate
                     bool newViewportTypeParameterShowLabel = Doc.GetElement(newViewPort.GetTypeId()).get_Parameter(BuiltInParameter.VIEWPORT_ATTR_SHOW_LABEL).Set(1);
 
                     // Grab viewport labels "viewtitles"
-                    FilteredElementCollector colViewTitles = new FilteredElementCollector(Doc);
+                    FilteredElementCollector colViewTitles = new FilteredElementCollector(Doc).OfClass(typeof(FamilySymbol)).OfCategory(BuiltInCategory.OST_ViewportLabel);
+                    List<Element> viewTitleElements = new List<Element>();
+                    foreach (var viewT in colViewTitles)
+                    {
+                        viewTitleElements.Add(viewT);
+
+                    }
+
+
                     colViewTitles.OfClass(typeof(FamilySymbol));
                     colViewTitles.OfCategory(BuiltInCategory.OST_ViewportLabel);
-                
-                    //set view title parameter
-                    //bool newViewportTypeParameterChangeLabel = Doc.GetElement(newViewPort.GetTypeId()).get_Parameter(BuiltInParameter.VIEWPORT_ATTR_LABEL_TAG).Set(newViewSheet.Id);
-
-                
-                    
-
+                                       
                     FilteredElementCollector viewsCol = new FilteredElementCollector(Doc).OfClass(typeof(ViewPlan));
                     viewsCol.ToElementIds();
 
@@ -203,14 +205,14 @@ namespace RevitPluginTemplate
                         }
 
                     }
-                }
-                catch (Exception ex)
-                {
-                    TaskDialog.Show("Crash", ex.Message);
-                    throw;
-                }
+            //    }
+            //    catch (Exception ex)
+            //{
+            //    TaskDialog.Show("Crash", ex.Message);
+            //    throw;
+            //}
 
-                sheetTrans.Commit();
+            sheetTrans.Commit();
             }
                       
         }

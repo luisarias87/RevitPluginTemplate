@@ -20,7 +20,7 @@ namespace RevitPluginTemplate
             var tabandPanel = CreateTabandPanel(application);
             
             tabandPanel.AddItem(PushButton(application));
-            
+            tabandPanel.AddItem(TestPushButton(application));
             
             
             
@@ -57,6 +57,29 @@ namespace RevitPluginTemplate
 
 
             return button1;
+        }
+
+        public PushButtonData TestPushButton(UIControlledApplication a) 
+        { 
+            // button constructor
+            string name = "Test Button";
+            string text = "Test Button";
+            string assembly = Assembly.GetExecutingAssembly().Location;
+            string className = "RevitPluginTemplate.CreateFloorPlan";
+
+            // button large image
+            //Uri uriImage = new Uri(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Resources","test.png"));
+            //BitmapImage largeimage = new BitmapImage(uriImage);
+
+
+            PushButtonData testButton = new PushButtonData(name, text, assembly, className)
+            {
+                //LargeImage = largeimage,
+                ToolTip = "Sample Tool Tip"
+
+            };
+
+            return testButton;
         }
     }
     
