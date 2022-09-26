@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using NuGet.Protocol.Plugins;
+
 
 namespace RevitPluginTemplate
 {
@@ -17,17 +17,17 @@ namespace RevitPluginTemplate
     public partial class Form1 : System.Windows.Forms.Form
     {
         Document Doc;
+        IList<string> disciplines = new List<string>();
         public Form1(Document doc)
         {
             InitializeComponent();
             Doc = doc;
-            duplicateRB.Checked = true;
+            duplicateRB.Checked = true;            
         }               
         public void btn_Create_Click(object sender, EventArgs e)
-        {
-
+        {       
             CreateView();
-            CreateSheet();
+            
 
             if (disciplineListBox.SelectedItem == null)
             {
@@ -39,20 +39,22 @@ namespace RevitPluginTemplate
         }
         Autodesk.Revit.DB.View duplicatedView = null;
         ElementId newView = null;
-
         public void CreateView()
         {
-           
-            
-
+            IList<object> selected = new List<object>();
+            foreach (var item in disciplineListBox.CheckedItems)
+            {
+                selected.Add(item);
+            }
+            foreach (var item in selected)
+            {                                    
                 using (Transaction viewTrans = new Transaction(Doc, "Duplicate View"))
                 {
                     viewTrans.Start();
+                    // Collect all View Plans from project
                     IList<Element> ViewPlans = new FilteredElementCollector(Doc).OfClass(typeof(ViewPlan)).ToElements();
+                    // Retrieve Selected Combo Box Item to string
                     string viewInComboBox = this.viewsComboBox.SelectedItem.ToString();
-
-
-
                     foreach (Element viewPlan in ViewPlans)
                     {
                         if (viewPlan.Name == viewInComboBox)
@@ -60,13 +62,12 @@ namespace RevitPluginTemplate
                             duplicatedView = viewPlan as Autodesk.Revit.DB.View;
                         }
                     }
-
+                    // View duplication using the selected View duplicate Option
                     if (duplicatedView.CanViewBeDuplicated(ViewDuplicateOption.Duplicate) == true && duplicateRB.Checked == true)
                     {
                         newView =
                     duplicatedView.Duplicate(ViewDuplicateOption.Duplicate); ;
                     }
-
                     else if (duplicatedView.CanViewBeDuplicated(ViewDuplicateOption.WithDetailing) == true && duplicateWithDetailingRB.Checked == true)
                     {
                         newView =
@@ -82,94 +83,65 @@ namespace RevitPluginTemplate
                     {
                         MessageBox.Show("View Cannot be duplicated!");
                     }
-
-
-
-
-
-
-                    // Set the new View Name 
-                    IList<Element> viewPlans = new FilteredElementCollector(Doc).OfClass(typeof(ViewPlan)).ToElements();
-
-                    foreach (ViewPlan vPlan in viewPlans)
-                    {
-                        if (vPlan.ViewType == ViewType.FloorPlan && vPlan.Id == newView)
-                        {
-
-                            vPlan.get_Parameter(BuiltInParameter.VIEW_NAME).Set(duplicatedView.Name + "_" + disciplineListBox.SelectedItem.ToString());
-
-                        }
-
-                    }
-
+                    
                     viewTrans.Commit();
                 }
-            
+            }
+            // Set the new View Name 
+            //IList<Element> viewPlans = new FilteredElementCollector(Doc).OfClass(typeof(ViewPlan)).ToElements();
+            //foreach (ViewPlan vPlan in viewPlans)
+            //{
+            //    if (vPlan.ViewType == ViewType.FloorPlan && vPlan.Id == newView)
+            //    {
 
+            //        vPlan.get_Parameter(BuiltInParameter.VIEW_NAME).Set(duplicatedView.Name + "_" + disciplineListBox.SelectedItem.ToString());
+
+            //    }
+            //}
         }
         public void CreateSheet()
         {
             using (Transaction sheetTrans = new Transaction(Doc, "Create Sheet"))
+            {
+                sheetTrans.Start();
+                // Get Title Blocks
+                IList<Element> tBlockTypes = new FilteredElementCollector(Doc).OfCategory(BuiltInCategory.OST_TitleBlocks).WhereElementIsElementType().ToElements();
+                string selectedTBlock = this.sheet_titleBlock.SelectedItem.ToString();
+                Element titleBlock = null;
+                foreach (Element tBlockType in tBlockTypes)
                 {
-                    sheetTrans.Start();
-                    // Get Title Blocks
-                    IList<Element> tBlockTypes = new FilteredElementCollector(Doc).OfCategory(BuiltInCategory.OST_TitleBlocks).WhereElementIsElementType().ToElements();
-
-                    string selectedTBlock = this.sheet_titleBlock.SelectedItem.ToString();
-
-                    Element titleBlock = null;
-
-                    foreach (Element tBlockType in tBlockTypes)
+                    if (tBlockType.Name == selectedTBlock)
                     {
-                        if (tBlockType.Name == selectedTBlock)
-                        {
-                            titleBlock = tBlockType;
-                        }
+                        titleBlock = tBlockType;
                     }
-                    // Create a filtered element collector to get all levels
-                    string sheetLevel = null;
-                    FilteredElementCollector lvlCol = new FilteredElementCollector(Doc);
-                    ICollection<Element> lvlCollection = lvlCol.OfClass(typeof(Level)).ToElements();
-
-                    foreach (Element l in lvlCol)
+                }
+                // Create a filtered element collector to get all levels
+                string sheetLevel = null;
+                FilteredElementCollector lvlCol = new FilteredElementCollector(Doc);
+                ICollection<Element> lvlCollection = lvlCol.OfClass(typeof(Level)).ToElements();
+                foreach (Element l in lvlCol)
+                {
+                    Level lvl = l as Level;
+                    if (lvl.Name == duplicatedView.GenLevel.Name)
                     {
-                        Level lvl = l as Level;
-                        if (lvl.Name == duplicatedView.GenLevel.Name)
-                        {
-                            sheetLevel = lvl.Name;
-
-                        }
-
-
+                        sheetLevel = lvl.Name;
                     }
+                }
+                // Create View Sheet
 
-
-
-
-
-                    // Create View Sheet
-                    string viewLevel = null;
-                    ViewSheet newViewSheet = ViewSheet.Create(Doc, titleBlock.Id);
+                ViewSheet newViewSheet = ViewSheet.Create(Doc, titleBlock.Id);
+                {
+                    if (areaName != null)
                     {
-                        if (areaName != null)
-                        {
-                            newViewSheet.Name = sheetLevel + " " + " " + "Area " + areaName.Text + " " + disciplineListBox.SelectedItem.ToString();
-                        }
-
+                        newViewSheet.Name = sheetLevel + " " + " " + "Area " + areaName.Text + " " + disciplineListBox.SelectedItem.ToString();
                     }
-
-
-
-
-                    // add passed in view onto center of sheet 
-                    UV location = new UV((newViewSheet.Outline.Max.U - newViewSheet.Outline.Min.U) / 2, (newViewSheet.Outline.Max.V - (newViewSheet.Outline.Min.V) / 2));
-
+                }
+                // add passed in view onto center of sheet 
+                UV location = new UV((newViewSheet.Outline.Max.U - newViewSheet.Outline.Min.U) / 2, (newViewSheet.Outline.Max.V - (newViewSheet.Outline.Min.V) / 2));
                 // create viewport
-                //try
-                //{
+                try
+                {
                     Viewport newViewPort = Viewport.Create(Doc, newViewSheet.Id, newView, new XYZ(location.U, location.V, 0));
-
-               
 
                     // set viewport settings
                     newViewPort.LookupParameter("View Scale").Set(64);
@@ -184,17 +156,12 @@ namespace RevitPluginTemplate
                         viewTitleElements.Add(viewT);
 
                     }
-
-
                     colViewTitles.OfClass(typeof(FamilySymbol));
                     colViewTitles.OfCategory(BuiltInCategory.OST_ViewportLabel);
-                                       
+
                     FilteredElementCollector viewsCol = new FilteredElementCollector(Doc).OfClass(typeof(ViewPlan));
                     viewsCol.ToElementIds();
-
-
                     this.viewsComboBox.SelectedItem.ToString();
-
                     string newViewName = null;
                     foreach (var view in viewsCol)
                     {
@@ -205,22 +172,24 @@ namespace RevitPluginTemplate
                         }
 
                     }
-            //    }
-            //    catch (Exception ex)
-            //{
-            //    TaskDialog.Show("Crash", ex.Message);
-            //    throw;
-            //}
+                }
+                catch (Exception ex)
+                {
+                    TaskDialog.Show("Crash", ex.Message);
+                    throw;
+                }
 
-            sheetTrans.Commit();
+                sheetTrans.Commit();
             }
-                      
+
         }
+
         private void btn_Cancel_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;    
             Close();    
         }
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -254,7 +223,7 @@ namespace RevitPluginTemplate
             }
             viewsComboBox.DataSource = floorplanViews;
 
-            IList<string> disciplines = new List<string>();
+            
             disciplines.Add("Distribution");
             disciplines.Add("Branch Power");
             disciplines.Add("Emergency Power");
@@ -263,21 +232,9 @@ namespace RevitPluginTemplate
             disciplines.Add("Penetrations");
             disciplines.Add("Equipment Layout");
             disciplines.Add("Hangers");
-            
+
             disciplineListBox.DataSource = disciplines;
             
-            
-
-
-
-
-
-
-
-
-
-
-
 
         }
    

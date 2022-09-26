@@ -49,24 +49,24 @@ namespace RevitPluginTemplate
                     
                 }
                     lvlTrans.Start();
+                    // Create new Floor plan
                     ViewPlan newFloorPlan = ViewPlan.Create(Doc, viewFamily.Id, levelSelected.Id);
-                    lvlTrans.Commit();
-
+                    Parameter ViewTemplate = newFloorPlan.get_Parameter(BuiltInParameter.VIEW_TEMPLATE);
+                    ViewTemplate.Set(ElementId.InvalidElementId);
+                    lvlTrans.Commit();                   
                 }
                 catch (Exception)
                 {
 
                     throw;
                 }
-
-            }
-
-
-                TaskDialog.Show("Hello", "this has worked!");
+            }                            
             DialogResult = DialogResult.OK;
             Close();
+            
         }
-
+        
+        
         private void Form2_Load(object sender, EventArgs e)
         {
             // Get all levels
