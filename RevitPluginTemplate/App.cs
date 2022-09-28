@@ -47,13 +47,13 @@ namespace RevitPluginTemplate
         {
             string assembly = Assembly.GetExecutingAssembly().Location;
             Uri uriImage = new Uri(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Resources", "Button1.png"));
-            BitmapImage largeImage = new BitmapImage(uriImage);
+            //BitmapImage largeImage = new BitmapImage(uriImage);
 
             PushButtonData button1 = new PushButtonData("Button 1", " Show\nLevels", assembly, "RevitPluginTemplate.Command")
             {
                 ToolTip = "This is  a sample tool tip",                
             };
-            button1.LargeImage = largeImage;
+            //button1.LargeImage = largeImage;
 
 
             return button1;

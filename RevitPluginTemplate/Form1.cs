@@ -315,6 +315,21 @@ namespace RevitPluginTemplate
             
 
         }
-   
+
+        private void Alldisciplines_CheckedChanged(object sender, EventArgs e)
+        {
+            for (int i = 0; i < disciplineListBox.Items.Count; i++)
+            {
+                if (Alldisciplines.Checked == true)
+                {
+                    disciplineListBox.SetItemChecked(i,true);
+                }
+                else
+                {
+                    disciplineListBox.SetItemChecked(i, false);
+                }
+
+            }
+        }
     }
 }

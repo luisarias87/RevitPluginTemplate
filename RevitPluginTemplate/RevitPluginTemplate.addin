@@ -6,7 +6,7 @@
 		<Text>Revit Plugin Template</Text>
 		<Description>This is a Pluging Template</Description>
 		<VisibilityMode>AlwaysVisible</VisibilityMode>
-		<Assembly>C:\Users\larias\source\repos\RevitPluginTemplate\RevitPluginTemplate\bin\Debug\RevitPluginTemplate.dll</Assembly>
+		<Assembly>C:\Users\larias\source\repos\luisarias87\RevitPluginTemplate\RevitPluginTemplate\bin\Debug\RevitPluginTemplate.dll</Assembly>
 		<AddInId>2949DCF2-FCB9-4798-BCE8-D6A3F122A2A8</AddInId>
 		<VendorId>Larias</VendorId>
 		<VendorDescription>Autodesk, Inc, www.autodesk.com</VendorDescription>
