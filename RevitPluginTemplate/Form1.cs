@@ -17,20 +17,20 @@ namespace RevitPluginTemplate
     public partial class Form1 : System.Windows.Forms.Form
     {
         Document Doc;
+        
         IList<string> disciplines = new List<string>();
+
         public Form1(Document doc)
         {
             InitializeComponent();
             Doc = doc;
             duplicateRB.Checked = true;            
         }               
+
         public void btn_Create_Click(object sender, EventArgs e)
         {
             CreateView();
             CreateSheet();
-
-
-
 
             if (disciplineListBox.SelectedItem == null)
             {
@@ -125,23 +125,15 @@ namespace RevitPluginTemplate
                             
                             v.get_Parameter(BuiltInParameter.VIEW_NAME).Set(v.GenLevel.Name +" "+ "Area "  +" "+ areaName.Text +" "+ item.ToString());
                             viewTran.Commit();
-
+                            
                             
                         }
                         
                     }                                        
                 }
-                
-
             }
             newViewId = newView;
             return newView;
-
-            
-
-
-
-
         }
         public void CreateSheet()
         {
@@ -151,13 +143,10 @@ namespace RevitPluginTemplate
             {
                 select.Add(item);
             }
-            
-
             foreach (var item in newViews) 
             {
                 try
                 {
-                    
                     using (Transaction sheetTrans = new Transaction(Doc, "Create Sheet"))
                     {
                         sheetTrans.Start();
@@ -197,22 +186,14 @@ namespace RevitPluginTemplate
 
                                     if (areaName != null)
                                     {
-                                        newViewSheet.Name = sheetLevel + "Area " + " " + areaName.Text + v.Name ;
+                                        newViewSheet.Name =  "Area " + " " + areaName.Text + v.Name ;
                                     }
                                     else
                                     {
-                                        newViewSheet.Name = sheetLevel + " " + "Area " + areaName.Text + v.Name;
+                                        newViewSheet.Name = sheetLevel + " " + v.Name;
                                     }
                                 }
-
-
-
                             }
-
-
-                            
-
-                            
                         }
                         // add passed in view onto center of sheet 
                         UV location = new UV((newViewSheet.Outline.Max.U - newViewSheet.Outline.Min.U) / 2, (newViewSheet.Outline.Max.V - (newViewSheet.Outline.Min.V) / 2));
@@ -220,9 +201,6 @@ namespace RevitPluginTemplate
                         try
                         {
                              Viewport newViewPort = Viewport.Create(Doc, newViewSheet.Id, item, new XYZ(location.U, location.V, 0));
-
-                            
-                            
 
                             // set viewport settings
                             //newViewPort.LookupParameter("View Scale").Set(64);
@@ -250,7 +228,6 @@ namespace RevitPluginTemplate
                         sheetTrans.Commit();
                     }
 
-
                 }
                 catch (Exception)
                 {
@@ -258,16 +235,12 @@ namespace RevitPluginTemplate
                     throw;
                 }
             }
-            
-
         }
-
         private void btn_Cancel_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;    
             Close();    
         }
-
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -286,7 +259,6 @@ namespace RevitPluginTemplate
                 {
                     TaskDialog.Show("Error", ex.ToString());
                 }
-         
 
             // Collect all floor plan views and put them in a combo Box
             IList<Element> ViewPlans  = new FilteredElementCollector(Doc).OfClass(typeof(ViewPlan)).ToElements();
@@ -299,8 +271,8 @@ namespace RevitPluginTemplate
                     floorplanViews.Add(floorPlan.Name);
                 }
             }
+            
             viewsComboBox.DataSource = floorplanViews;
-
             
             disciplines.Add("Distribution");
             disciplines.Add("Branch Power");
@@ -312,10 +284,7 @@ namespace RevitPluginTemplate
             disciplines.Add("Hangers");
 
             disciplineListBox.DataSource = disciplines;
-            
-
         }
-
         private void Alldisciplines_CheckedChanged(object sender, EventArgs e)
         {
             for (int i = 0; i < disciplineListBox.Items.Count; i++)

@@ -17,10 +17,8 @@ namespace RevitPluginTemplate
 
     internal class Command : IExternalCommand
     {
-        
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-
             // Get application and document objects
             UIApplication uiapp = commandData.Application;
             UIDocument uidoc = commandData.Application.ActiveUIDocument; 
@@ -33,23 +31,12 @@ namespace RevitPluginTemplate
                 {
 
                     return Result.Succeeded;
-
                 }
                 else
                 {
                     return Result.Cancelled;
                 }
-
             }
-
-
-
-
-
-
-           
-                
         }
-        
     }
 }

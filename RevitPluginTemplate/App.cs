@@ -17,12 +17,10 @@ namespace RevitPluginTemplate
     {
         public Result OnStartup(UIControlledApplication application)
         {
-            var tabandPanel = CreateTabandPanel(application);
+            RibbonPanel tabandPanel = CreateTabandPanel(application);
             
             tabandPanel.AddItem(PushButton(application));
             tabandPanel.AddItem(TestPushButton(application));
-            
-            
             
             return Result.Succeeded;
         }
@@ -32,24 +30,20 @@ namespace RevitPluginTemplate
         }
         public RibbonPanel CreateTabandPanel(UIControlledApplication a)
         {
-            String tab = "MEP Coordination";
-            String Panel1 = "Levels";
+            String tab = "Shop Drawings";
+            String Panel1 = "Sheets";
             a.CreateRibbonTab(tab);
             RibbonPanel ribbonPanel = a.CreateRibbonPanel(tab, Panel1);
-            
-
             return ribbonPanel;
 
         }
-
-
         public PushButtonData PushButton(UIControlledApplication a)
         {
             string assembly = Assembly.GetExecutingAssembly().Location;
             Uri uriImage = new Uri(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Resources", "Button1.png"));
             //BitmapImage largeImage = new BitmapImage(uriImage);
 
-            PushButtonData button1 = new PushButtonData("Button 1", " Show\nLevels", assembly, "RevitPluginTemplate.Command")
+            PushButtonData button1 = new PushButtonData("Sample", " Create\nSheets", assembly, "RevitPluginTemplate.Command")
             {
                 ToolTip = "This is  a sample tool tip",                
             };
@@ -62,10 +56,10 @@ namespace RevitPluginTemplate
         public PushButtonData TestPushButton(UIControlledApplication a) 
         { 
             // button constructor
-            string name = "Test Button";
-            string text = "Test Button";
+            string name = "Cable tray Clearance";
+            string text = "Cable Tray Clearance";
             string assembly = Assembly.GetExecutingAssembly().Location;
-            string className = "RevitPluginTemplate.CreateFloorPlan";
+            string className = "RevitPluginTemplate.Clearance.ClearanceCommand";
 
             // button large image
             //Uri uriImage = new Uri(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Resources","test.png"));
