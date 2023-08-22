@@ -37,7 +37,7 @@ namespace RevitPluginTemplate.Clearance
                 var familySymbolCollector = new FilteredElementCollector(doc).OfClass(typeof(FamilySymbol)).OfCategory(BuiltInCategory.OST_GenericModel).
                     WhereElementIsElementType();
 
-                var levelCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Levels).WhereElementIsNotElementType().First();
+                var levelCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Levels).WhereElementIsNotElementType().ToElements().First() as Level;
 
                 var cTray = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_CableTray).WhereElementIsNotElementType().First();
 
@@ -45,6 +45,8 @@ namespace RevitPluginTemplate.Clearance
 
                 var start = location.Curve.GetEndPoint(0);
                 var end  = location.Curve.GetEndPoint(1);
+
+                Line line = Line.CreateUnbound(start, end);
 
                 foreach (FamilySymbol symbol in familySymbolCollector)
                 {
@@ -60,11 +62,9 @@ namespace RevitPluginTemplate.Clearance
                             if (famToPlace != null)
                             {
                                 famToPlace.Activate();
-                                
-
                             }
-                            FamilyInstance familyInstance = doc.Create.NewFamilyInstance(start, symbol, levelCollector,Autodesk.Revit.DB.Structure.StructuralType.NonStructural);
-
+                            FamilyInstance familyInstance = doc.Create.NewFamilyInstance(line, symbol, levelCollector,Autodesk.Revit.DB.Structure.StructuralType.NonStructural);
+                            
                             t.Commit();
                         }
 

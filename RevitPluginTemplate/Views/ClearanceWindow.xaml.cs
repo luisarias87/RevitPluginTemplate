@@ -51,12 +51,13 @@ namespace RevitPluginTemplate.Views
                 if (symbol.Name == "CableTrayClearance_2022")
                 {
                     cableTrayFittingSymbol = symbol;
+                    
 
                 }
                 if (cableTrayFittingSymbol != null)
                 {
-                    clearanceFamilyName.Add(cableTrayFittingSymbol.Name);
-                    CTComboBox.ItemsSource = clearanceFamilyName;
+                    CTComboBox.ItemsSource = new List<string> { cableTrayFittingSymbol.Name };
+                    CTComboBox.SelectedIndex = 0;
                 }
                 
             }
