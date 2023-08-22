@@ -43,8 +43,15 @@ namespace RevitPluginTemplate.Clearance
 
                 var location = cTray.Location as LocationCurve;
 
+                Curve cableTrayCurve = location.Curve;
+
+               
+
                 var start = location.Curve.GetEndPoint(0);
                 var end  = location.Curve.GetEndPoint(1);
+
+                // extract the reference axis from the cable trays geometry
+                var cableTrayAxis =  (cableTrayCurve.GetEndPoint(0) - cableTrayCurve.GetEndPoint(1).Normalize());
 
                 Line line = Line.CreateUnbound(start, end);
 
