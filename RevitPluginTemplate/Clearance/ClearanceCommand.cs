@@ -29,7 +29,7 @@ namespace RevitPluginTemplate.Clearance
             ClearanceWindow clearanceWindow = new ClearanceWindow(doc);
             clearanceWindow.ShowDialog();
 
-
+           
 
             if (!string.IsNullOrEmpty(clearanceWindow.SelectedFamilyName))
             {
@@ -41,45 +41,89 @@ namespace RevitPluginTemplate.Clearance
 
                 var cTray = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_CableTray).WhereElementIsNotElementType().First();
 
+                var cTrayHeight = cTray.LookupParameter("Top Elevation").ToString();
+
+
                 var location = cTray.Location as LocationCurve;
 
-                Curve cableTrayCurve = location.Curve;
-
-               
+                // use the normalized cable tray direction vector to determine the placement point
+                var cableTrayDirection = location.Curve.GetEndPoint(1) - location.Curve.GetEndPoint(0);
+                var normalizedDirection = cableTrayDirection.Normalize();
 
                 var start = location.Curve.GetEndPoint(0);
-                var end  = location.Curve.GetEndPoint(1);
+                var end = location.Curve.GetEndPoint(1);
+                var desiredFamilyLength = location.Curve.Length;
 
-                // extract the reference axis from the cable trays geometry
-                var cableTrayAxis =  (cableTrayCurve.GetEndPoint(0) - cableTrayCurve.GetEndPoint(1).Normalize());
+                // calculate the placement point based on the normalized direction
+                XYZ placementPoint = start  + normalizedDirection - normalizedDirection ;
 
-                Line line = Line.CreateUnbound(start, end);
+                XYZ placementEndPoint  = placementPoint + normalizedDirection * desiredFamilyLength;
+
+
+                // create the line for family placement
+                Line line = Line.CreateBound(placementPoint,placementEndPoint);
+
+
+
+                //// create a new line using the placement point and the normalized direction
+                //Line line = Line.CreateBound(placementPoint,placementPoint + normalizedDirection *desiredFamilyLength);
+
+                FamilySymbol famToPlace = null;
 
                 foreach (FamilySymbol symbol in familySymbolCollector)
                 {
-                    FamilySymbol famToPlace = null;
+                    
 
                     if (symbol.Family.Name == clearanceWindow.SelectedFamilyName)
                     {
-                        using (Transaction t = new Transaction(doc, "Placing Family"))
-                        {
-                            t.Start();
-                            
-                            famToPlace = symbol;
-                            if (famToPlace != null)
-                            {
-                                famToPlace.Activate();
-                            }
-                            FamilyInstance familyInstance = doc.Create.NewFamilyInstance(line, symbol, levelCollector,Autodesk.Revit.DB.Structure.StructuralType.NonStructural);
-                            
-                            t.Commit();
-                        }
-
+                        famToPlace = symbol;
+                        break;
                     }
                 }
+                
+                using (Transaction t = new Transaction(doc, "Placing Family"))
+                {
+                    t.Start();
+
+                    
+
+                    if (famToPlace != null)
+                    {
+                        famToPlace.Activate();
+                    }
+
+                    FamilyInstance familyInstance = doc.Create.NewFamilyInstance(line, famToPlace, levelCollector, Autodesk.Revit.DB.Structure.StructuralType.NonStructural);
+
+                    // Find and set the AFF parameter
+                    var instanceHParameter = familyInstance.GetParameters("AFF");
+
+
+                    if (instanceHParameter != null && instanceHParameter.Any())
+                    {
+
+                        double cTrayHeightValue;
+                        if (double.TryParse(cTrayHeight, out cTrayHeightValue)) ;
+
+                        double feetToInternalFactor = 304.8;
+
+                        double convertedValue = cTrayHeightValue * feetToInternalFactor;
+
+                        instanceHParameter.First().Set(convertedValue);
+
+                    }
+
+                    
+
+                    
+
+                    t.Commit();
+                }
+                
 
                 
+
             }
+           
             return Result.Succeeded;
         }
 
