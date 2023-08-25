@@ -41,7 +41,7 @@ namespace RevitPluginTemplate.Clearance
 
                 var cTray = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_CableTray).WhereElementIsNotElementType().First();
 
-                var cTrayHeight = cTray.LookupParameter("Top Elevation").ToString();
+                var cTrayHeight = cTray.LookupParameter("Top Elevation");
 
 
                 var location = cTray.Location as LocationCurve;
@@ -95,39 +95,26 @@ namespace RevitPluginTemplate.Clearance
                     FamilyInstance familyInstance = doc.Create.NewFamilyInstance(line, famToPlace, levelCollector, Autodesk.Revit.DB.Structure.StructuralType.NonStructural);
 
                     // Find and set the AFF parameter
-                    var instanceHParameter = familyInstance.GetParameters("AFF");
+                    var instanceHParameter = familyInstance.GetParameters("AFF").FirstOrDefault( p => p.Definition.Name == "AFF").AsValueString();
 
 
-                    if (instanceHParameter != null && instanceHParameter.Any())
+                    if (instanceHParameter != null)
                     {
+                        var famCollector = new FilteredElementCollector(doc).OfClass(typeof(FamilyInstance)).FirstOrDefault( f => f.Name == familyInstance.Name) as FamilyInstance;
 
-                        double cTrayHeightValue;
-                        if (double.TryParse(cTrayHeight, out cTrayHeightValue)) ;
+                        var param  = famCollector.GetParameters("AFF").FirstOrDefault( p=> p.Definition.Name == "AFF");
 
-                        double feetToInternalFactor = 304.8;
-
-                        double convertedValue = cTrayHeightValue * feetToInternalFactor;
-
-                        instanceHParameter.First().Set(convertedValue);
+                        if (param != null)
+                        {
+                            param.Set(cTrayHeight.AsDouble());
+                        }
 
                     }
 
-                    
-
-                    
-
                     t.Commit();
                 }
-                
-
-                
-
             }
-           
             return Result.Succeeded;
         }
-
-
-
     }
 }
