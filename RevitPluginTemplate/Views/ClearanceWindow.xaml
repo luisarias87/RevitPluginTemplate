@@ -14,7 +14,7 @@
     <Grid.ColumnDefinitions>
     </Grid.ColumnDefinitions>
     <StackPanel Grid.Row="0">
-      <TextBox Text="Practice Cable Tray Clearance Addin" Margin="2"/>
+      <TextBox Text="Cable Tray Clearance" Margin="2"/>
       <GroupBox Header="Cable Tray Clearance Example">
         <ComboBox x:Name="CTComboBox"></ComboBox>
       </GroupBox>

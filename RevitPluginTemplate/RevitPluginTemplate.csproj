@@ -84,6 +84,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="CableTray\CableTrayElement.cs" />
+    <Compile Include="CableTray\CableTrayInfo.cs" />
+    <Compile Include="CableTray\CableTrayManager.cs" />
+    <Compile Include="CableTray\ICableTrayElement.cs" />
     <Compile Include="Clearance\ClearanceCommand.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
