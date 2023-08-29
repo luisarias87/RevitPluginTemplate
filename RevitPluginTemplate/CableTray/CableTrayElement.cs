@@ -10,6 +10,8 @@ namespace RevitPluginTemplate.CableTray
     public class CableTrayElement : ICableTrayElement
     {
         private Element _cableTrayElement;
+
+
         public CableTrayElement( Element cableTrayElement)
         {
             _cableTrayElement = cableTrayElement;

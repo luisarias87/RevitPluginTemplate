@@ -10,7 +10,7 @@ namespace RevitPluginTemplate.CableTray
     {
         private List<ICableTrayElement> _cableTrayElements = new List<ICableTrayElement>();
 
-        public void AddCableTRayElement(ICableTrayElement cableTrayElement) 
+        public void AddCableTrayElement(ICableTrayElement cableTrayElement) 
         {
             _cableTrayElements.Add(cableTrayElement);
         }

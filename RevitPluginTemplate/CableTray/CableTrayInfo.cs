@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Autodesk.Revit.DB;
-
+using Autodesk.Revit.DB.Mechanical;
 
 namespace RevitPluginTemplate.CableTray
 {
@@ -22,7 +22,15 @@ namespace RevitPluginTemplate.CableTray
 
         public double Length { get; private set; }
 
-        public string Comments { get; private set; }
+        public string Comments { get; set; }
+
+        public LocationCurve Location { get; private set; }
+
+        public XYZ Direction { get; private set; }
+
+        public Line PlacementLine { get; private set; }
+
+       
 
 
         public CableTrayInfo(Element cableTray)
@@ -33,7 +41,14 @@ namespace RevitPluginTemplate.CableTray
 
         private void InitializeParameters() 
         {
-             BottomElevation =  GetBottomElevation();
+            BottomElevation =  GetBottomElevation();
+            TopElevation = GetTopElevation();
+            ReferenceLevel= GetReferenceLevel();
+            Width= GetWidth();
+            Length= GetLength();
+            Location = GetLocation();
+            Direction = GetNormalizedDirection();
+            PlacementLine= CreatePlacementLine();
         }
 
 
@@ -69,6 +84,57 @@ namespace RevitPluginTemplate.CableTray
             }
             return null;
 
+        }
+
+        public double GetLength() 
+        {
+            
+           var locationCurve =  CableTray.Location as LocationCurve;
+
+            var length = locationCurve?.Curve.Length;
+
+            return length.Value;
+
+        }
+
+        public double GetWidth() 
+        {
+            var widthParam = CableTray.LookupParameter("Width");
+
+            return widthParam?.AsDouble() ?? 0.0;
+        }
+
+        public LocationCurve GetLocation() 
+        {
+
+            return CableTray?.Location as LocationCurve;
+           
+        }
+
+        public XYZ GetNormalizedDirection() 
+        {
+            var location = CableTray?.Location as LocationCurve;
+
+            var start = location.Curve.GetEndPoint(0);
+            var end = location.Curve.GetEndPoint(1);
+
+            var direction = end - start;
+
+            var normalizedDirection  = direction.Normalize();
+
+            return normalizedDirection;
+        }
+        public Line CreatePlacementLine() 
+        {
+            var start = this.Location.Curve.GetEndPoint(0);
+            var end  = this.Location?.Curve.GetEndPoint(1);
+
+            var startPoint = start + this.Direction - this.Direction;
+
+            var endPoint  = startPoint + this.Direction * this.Length;
+
+            return Line.CreateBound(startPoint, endPoint);
+            
         }
     }
 }
