@@ -18,6 +18,7 @@ namespace RevitPluginTemplate.CableTray
 
         public Level ReferenceLevel { get; private set; }
 
+
         public double Width { get; private set; }
 
         public double Length { get; private set; }
